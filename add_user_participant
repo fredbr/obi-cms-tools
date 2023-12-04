@@ -1,0 +1,32 @@
+#!/usr/bin/env python3
+
+import subprocess
+import os
+import argparse
+import re
+import pandas as pd
+
+def main():
+    parser = argparse.ArgumentParser("Convert polygon to cms testset")
+    parser.add_argument("csv_file", type=str)
+    parser.add_argument("contest_id", type=int)
+    parser.add_argument("-a", "--add", action="store_true")
+    args = parser.parse_args()
+
+    senhas_df = pd.read_csv(args.csv_file, header=None)
+
+    for line in senhas_df.values:
+        _, _, username, name, password = line
+        password = password.strip()
+        if args.add:
+            add_user_line = f"cmsAddUser '{name}' '' '{username}' -p '{password}'"
+        else:
+            add_user_line = f"cmsUpdatePassword '{username}' -p '{password}'"
+        add_participant_line = f"cmsAddParticipation '{username}' -c {args.contest_id}"
+
+        subprocess.run(["ssh", "cms-p2", f'bash -l -c "{add_user_line} && {add_participant_line}"'])
+        print(add_user_line)
+        print(add_participant_line)
+
+if __name__ == "__main__":
+    main()

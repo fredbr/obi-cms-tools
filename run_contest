@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+
+import subprocess
+import os
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser("Run contest with given id")
+    parser.add_argument("contest_id", type=int)
+    args = parser.parse_args()
+    run_string = f"nohup cmsResourceService -a {args.contest_id} > cms.log 2>cms_error.log < /dev/null &"
+
+    bash_string = f'bash -l -c "{run_string}"'
+    subprocess.Popen([f"ssh cms-p2 '{bash_string}'"], shell=True)
+
+
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+import subprocess
+import os
+import argparse
+
+def main():
+    parser = argparse.ArgumentParser("Run admin server")
+    args = parser.parse_args()
+    run_string = f"pkill cms"
+
+    subprocess.run(["ssh", "cms-p2", run_string])
+
+
+if __name__ == "__main__":
+    main()

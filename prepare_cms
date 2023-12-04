@@ -1,0 +1,31 @@
+#!/usr/bin/env python3
+
+import subprocess
+import os
+import argparse
+import re
+
+def main():
+    parser = argparse.ArgumentParser("Convert polygon to cms testset")
+    parser.add_argument("problem_zip", type=str)
+    args = parser.parse_args()
+
+    zip_name = args.problem_zip
+    folder_name = zip_name.split(".")[0]
+    subprocess.run(["unzip", "-u", zip_name , "-d", folder_name])
+
+    test_dir = folder_name + "/tests"
+    tests = [f for f in os.listdir(test_dir) if '.' not in f]
+
+    num_digs = max(len(f) for f in tests)
+    for name in tests:
+        new_name = name.rjust(num_digs, "0")
+        os.rename(test_dir + "/" + name, test_dir + "/" + new_name + ".in")
+        os.rename(test_dir + "/" + name + ".a", test_dir + "/" + new_name + ".out")
+    os.chdir(f"{folder_name}/tests")
+    subprocess.run(["zip", "-r", "../../" + folder_name + "_cms.zip", "."])
+    os.chdir("../..")
+    subprocess.run(["rm", "-rf", folder_name])
+
+if __name__ == "__main__":
+    main()

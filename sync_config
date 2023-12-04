@@ -1,0 +1,19 @@
+#!/usr/bin/env python3
+
+import subprocess
+import os
+import subprocess
+import os
+import argparse
+import re
+
+def main():
+    parser = argparse.ArgumentParser("Sync cms config")
+    parser.add_argument("cms_conf", help="Path to cms.conf", type=str)
+    args = parser.parse_args()
+
+    subprocess.run(["scp", args.cms_conf, "cms-p2:/usr/local/etc/cms.conf"])
+
+
+if __name__ == "__main__":
+    main()
